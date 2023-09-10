@@ -19,10 +19,8 @@ class Database:
         cls.col.delete_one({'id': id})
 
     @classmethod
-    def update(cls, email, new_pwd_hash = '', new_email = '', new_name='', new_id=''):
-        if new_email == '':
-            new_email = email
-        cls.col.update_one({'email': email}, {"$set": {'email': new_email, 'pwd_hash': new_pwd_hash, 'name': new_name, 'id': new_id}})
+    def update(cls, id = None, pwd_hash = '', email = '', name=''):
+        cls.col.update_one({"id": id}, {"$set": {'email': email, 'pwd_hash': pwd_hash, 'name': name, 'id': id}})
 
     @classmethod
     def ping(cls):

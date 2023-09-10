@@ -35,9 +35,9 @@ def get_users():
 @app.route('/users/<id>', methods=['GET'])
 def get_user_by_id(id):
     user = User.get_by_id(int(id))
-    user_data = {}
-    user_data = {'Id': user.id, 'Name': user.name, 'Email': user.email}
-    if(user_data):
+    if(user):
+        user_data = {}
+        user_data = {'Id': user.id, 'Name': user.name, 'Email': user.email}
         return jsonify(user_data), 200
 
     return jsonify({"message": "No user found from given ID"}), 400
@@ -71,8 +71,20 @@ def update_user_data(id):
         data['pwd_hash'] = generate_password_hash(password)
         del data['password']
 
-        user = User(**data)
-        response = user.update_user()
+        user_to_update  = User.get_by_id(int(request_data['id']))
+
+        if(user_to_update is None):
+            return jsonify({"message": "No user found from given ID"}), 400
+
+        # Assign new values to user object
+        user_to_update.name = request_data['name']
+        user_to_update.email = request_data['email']
+        user_to_update.pwd_hash = request_data['pwd_hash']
+        user_to_update.generate_document()
+        
+        # Update user in database
+        response = user_to_update.update_user()
+        
         if(response[0]):
             return jsonify(response[1]), 200
         

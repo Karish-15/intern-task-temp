@@ -7,7 +7,7 @@ class User(UserMixin):
     """The User model"""
 
     def __init__(self, _id=None, id=None, name=None, email=None, pwd_hash=None) -> None:
-        self.id = id
+        self.id = int(id)
         self.name = name
         self.email = email
         self.pwd_hash = pwd_hash
@@ -55,17 +55,9 @@ class User(UserMixin):
 
         return [True, "User created successfully"]
 
-    def update_user(self, document=None):
-        if document:
-            Database.update(document)
-        else:
-            Database.update(self.document)
-
+    def update_user(self):
+        Database.update(id = self.id, pwd_hash = self.pwd_hash, email = self.email, name = self.name)
         return [True, "User updated successfully"]
 
-if(__name__ == '__main__'):
-    test = User(id = 8, name = "Karish", email = "test@email.com", pwd_hash="LOLOLOLOLOl")
-
-    print(test.save_to_mongo())
-
-    # print(test.validate_password("test@email.com", "123"))
+    def update_document(self, document):
+        self.document = document
