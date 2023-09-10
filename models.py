@@ -53,8 +53,6 @@ class User(UserMixin):
 
         return[True, "User created successfully"]
 
-        return [True, "User created successfully"]
-
     def update_user(self):
         Database.update(id = self.id, pwd_hash = self.pwd_hash, email = self.email, name = self.name)
         return [True, "User updated successfully"]
