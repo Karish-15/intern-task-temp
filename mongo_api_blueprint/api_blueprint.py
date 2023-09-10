@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint
 from flask_restful import Resource, Api, reqparse
 from werkzeug.security import generate_password_hash
 
