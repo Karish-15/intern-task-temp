@@ -15,8 +15,8 @@ Run using
 
 | Method     | URI                               | Description                                                  |
 |------------|-----------------------------------|---------------------------------------------------------|
-| `GET`     | `/users`                        |Send form-data to create a user |
-| `POST` | `/users`                        |Send token in `Authorization` header to get user info from said token |
+| `GET`     | `/users`                        |Get list of all users in JSON format |
+| `POST` | `/users`                        |Send form data to register new user |
 | `GET`     | `/users/<id>`                        |Get details about user in JSON format |
 | `PUT`     | `/users/<id>`                        |Send relevant form-data to update user details |
 | `DELETE`     | `/users/<id>`                        |Delete user with id = <id> from database |
