@@ -15,20 +15,81 @@ app.config['SESSION_COOKIE_DOMAIN'] = False
 app.config['Access-Control-Allow-Credentials'] = True
 app.config.update(SESSION_COOKIE_SAMESITE="None", SESSION_COOKIE_SECURE=True)
 
-@app.route('/users', method=['GET'])
+@app.route('/users', methods=['GET'])
 def get_users():
     all_users = Database.col.find()
-    status = 200
+    users_list = []
+
     if(all_users):
-        return jsonify(all_users), status
+        for user in all_users:
+            user_data = {}
+            user_data = {'Id': user['id'], 'Name': user['name'], 'Email': user['email']}
+            users_list.append(user_data)
+
+        response = {'Number of users': len(users_list), 'Users': users_list}
+
+        return jsonify(response), 200
 
     return jsonify({"message": "No users found"}), 400
 
-@app.route('/users/<id>', method=['GET'])
+@app.route('/users/<id>', methods=['GET'])
 def get_user_by_id(id):
-    user = User.get_by_id(id)
-    if(user):
-        return jsonify(user), 200
+    user = User.get_by_id(int(id))
+    user_data = {}
+    user_data = {'Id': user.id, 'Name': user.name, 'Email': user.email}
+    if(user_data):
+        return jsonify(user_data), 200
 
     return jsonify({"message": "No user found from given ID"}), 400
 
+@app.route('/users', methods=['POST'])
+def create_user():
+    request_data = request.form.to_dict()
+
+    if(request_data):
+        data = request_data
+        password = data['password']
+        data['pwd_hash'] = generate_password_hash(password)
+        del data['password']
+
+        user = User(**data)
+        response = user.save_to_mongo()
+        if(response[0]):
+            return jsonify({"message": response[1]}), 200
+        
+        return jsonify({"message": response[1]}), 400
+    
+    return jsonify({"message": "No data received"}), 400
+
+@app.route('/users/<id>', methods=['PUT'])
+def update_user_data(id):
+    request_data = request.form.to_dict()
+
+    if(request_data):
+        data = request_data
+        password = data['password']
+        data['pwd_hash'] = generate_password_hash(password)
+        del data['password']
+
+        user = User(**data)
+        response = user.update_user()
+        if(response[0]):
+            return jsonify(response[1]), 200
+        
+        return jsonify(response[1]), 400
+    
+    return jsonify({"message": "No data received"}), 400
+
+@app.route('/users/<id>', methods=['DELETE'])
+def delete_user_by_id(id):
+    user = User.get_by_id(int(id))
+    if(user):
+        Database.delete_by_id(user.id)
+        return jsonify({"message": "User deleted successfully"}), 200
+
+    return jsonify({"message": "No user found from given ID"}), 400
+
+
+if __name__ == '__main__':
+    # Database.ping()
+    app.run(debug=True)

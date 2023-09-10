@@ -45,13 +45,23 @@ class User(UserMixin):
     def save_to_mongo(self, document=None):
         checkUser = User.get_by_id(self.id)
         if(checkUser):
-            return {False, "User already exists"}
+            return [False, "User already exists"]
         if document:
             Database.insert(document)
         else:
             Database.insert(self.document)
 
-        return {True, "User created successfully"}
+        return[True, "User created successfully"]
+
+        return [True, "User created successfully"]
+
+    def update_user(self, document=None):
+        if document:
+            Database.update(document)
+        else:
+            Database.update(self.document)
+
+        return [True, "User updated successfully"]
 
 if(__name__ == '__main__'):
     test = User(id = 8, name = "Karish", email = "test@email.com", pwd_hash="LOLOLOLOLOl")

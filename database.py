@@ -15,14 +15,14 @@ class Database:
         cls.col.insert_one(document)
 
     @classmethod
-    def delete(cls, email):
-        cls.col.delete_one({'email': email})
+    def delete_by_id(cls, id):
+        cls.col.delete_one({'id': id})
 
     @classmethod
-    def update(cls, email, new_pwd_hash = '', new_email = ''):
+    def update(cls, email, new_pwd_hash = '', new_email = '', new_name='', new_id=''):
         if new_email == '':
             new_email = email
-        cls.col.update_one({'email': email}, {"$set": {'email': new_email, 'pwd_hash': new_pwd_hash}})
+        cls.col.update_one({'email': email}, {"$set": {'email': new_email, 'pwd_hash': new_pwd_hash, 'name': new_name, 'id': new_id}})
 
     @classmethod
     def ping(cls):
